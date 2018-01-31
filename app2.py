@@ -8,29 +8,33 @@ from sklearn.feature_extraction.text import (CountVectorizer, TfidfTransformer)
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
-#from sklearn.cross_validation import KFold
 from sklearn.model_selection import KFold
 from sklearn.metrics import (confusion_matrix, classification_report, accuracy_score)
 from sklearn.calibration import (calibration_curve, CalibratedClassifierCV)
+from sklearn.model_selection._split import RepeatedKFold
 
-
+ 
+#read training set from training file 
+print('Initiated...') 
 df = pd.read_csv("train2.csv", sep=",", encoding="latin-1")
 
 df = df.set_index('id')
 df.columns = ['class', 'text']
 
 data = df.reindex(numpy.random.permutation(df.index))
+print('Training data read')
 
-
-
+#create layout for classifier
 pipeline = Pipeline([
     ('count_vectorizer',   CountVectorizer(ngram_range=(1, 2))),
     ('tfidf',              TfidfTransformer()),
     ('classifier',         OneVsRestClassifier(LinearSVC()))
 ])
 
-#k_fold = KFold(n=len(data), n_folds=6, shuffle=True)
-k_fold = KFold(n_splits=6, shuffle=True)
+print('Training data...')
+#train data 
+k_fold = RepeatedKFold(n_splits=6)
+#k_fold = KFold(n_splits=6, shuffle = True)
 k_fold.get_n_splits(data)
 
 for train_indices, test_indices in k_fold.split(data):
@@ -40,18 +44,20 @@ for train_indices, test_indices in k_fold.split(data):
     test_text = data.iloc[test_indices]['text'].values
     test_y = data.iloc[test_indices]['class'].values.astype(str)
 
-    #Enter unseen data here
+    #Read test data
     files = glob.glob("predict.txt")
     lines = []
     for fle in files:
         with open(fle) as f:
             lines += f.readlines()        
     test_text = numpy.array(lines)
-    
-
+    print('Test data read')
+    #fit training data
     lb = LabelBinarizer()
     Z = lb.fit_transform(train_y)
-
+    
+    print('Classifying Test data...')
+    #fit test data using results from training
     pipeline.fit(train_text, Z)
     predicted = pipeline.predict(test_text)
     predictions = lb.inverse_transform(predicted)
@@ -61,7 +67,7 @@ for train_indices, test_indices in k_fold.split(data):
     #clf.fit(train_text, Z)
     #y_proba = clf.predict_proba(test_text)
 
-
+    print('Writing results...')
     df2=pd.DataFrame(predictions)
     df2.index+=1
     df2.index.name='Id'
@@ -72,9 +78,9 @@ for train_indices, test_indices in k_fold.split(data):
         print('Item: {0} => Label: {1}'.format(item, labels))
 
 
-    accuracy = accuracy_score(test_y, predictions)
+    #accuracy = accuracy_score(test_y, predictions)
 
-print('The resulting accuracy using Linear SVC is ', (100 * accuracy), '%\n')
+#print('The resulting accuracy using Linear SVC is ', (100 * accuracy), '%\n')
 #print y_proba
 """
 percentage_matrix = 100 * cm / cm.sum(axis=1).astype(float)
