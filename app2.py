@@ -8,7 +8,8 @@ from sklearn.feature_extraction.text import (CountVectorizer, TfidfTransformer)
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
-from sklearn.cross_validation import KFold
+#from sklearn.cross_validation import KFold
+from sklearn.model_selection import KFold
 from sklearn.metrics import (confusion_matrix, classification_report, accuracy_score)
 from sklearn.calibration import (calibration_curve, CalibratedClassifierCV)
 
@@ -28,9 +29,11 @@ pipeline = Pipeline([
     ('classifier',         OneVsRestClassifier(LinearSVC()))
 ])
 
-k_fold = KFold(n=len(data), n_folds=6, shuffle=True)
+#k_fold = KFold(n=len(data), n_folds=6, shuffle=True)
+k_fold = KFold(n_splits=6, shuffle=True)
+k_fold.get_n_splits(data)
 
-for train_indices, test_indices in k_fold:
+for train_indices, test_indices in k_fold.split(data):
     train_text = data.iloc[train_indices]['text'].values
     train_y = data.iloc[train_indices]['class'].values.astype(str)
 

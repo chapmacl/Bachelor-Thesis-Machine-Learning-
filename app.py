@@ -2,7 +2,7 @@ import glob
 import numpy
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.feature_extraction.text import (CountVectorizer, TfidfTransformer)
 from sklearn.multiclass import OneVsRestClassifier
@@ -13,7 +13,7 @@ from sklearn.metrics import (confusion_matrix, classification_report, accuracy_s
 from sklearn.calibration import (calibration_curve, CalibratedClassifierCV)
 
 
-df = pd.read_csv("corpus.csv", sep=",", encoding="latin-1")
+df = pd.read_csv("train2.csv", sep=",", encoding="latin-1")
 
 df = df.set_index('id')
 df.columns = ['class', 'text']
@@ -38,13 +38,13 @@ for train_indices, test_indices in k_fold:
     test_y = data.iloc[test_indices]['class'].values.astype(str)
 
     #Enter unseen data here
-    #files = glob.glob("corpus/*.txt")
-    #lines = []
-    #for fle in files:
-    #    with open(fle) as f:
-    #        lines += f.readlines()        
-    #test_text = numpy.array(lines)
-    #################################
+    files = glob.glob("predict.txt")
+    lines = []
+    for fle in files:
+        with open(fle) as f:
+            lines += f.readlines()        
+    test_text = numpy.array(lines)
+    
 
     lb = LabelBinarizer()
     Z = lb.fit_transform(train_y)
@@ -68,15 +68,7 @@ for train_indices, test_indices in k_fold:
     for item, labels in zip(test_text, predictions):
         print('Item: {0} => Label: {1}'.format(item, labels))
 
-    cm = confusion_matrix(test_y, predictions)
+
     accuracy = accuracy_score(test_y, predictions)
 
-print 'The resulting accuracy using Linear SVC is ', (100 * accuracy), '%\n'
-#print y_proba
-
-percentage_matrix = 100 * cm / cm.sum(axis=1).astype(float)
-plt.figure(figsize=(16, 16))
-sns.heatmap(percentage_matrix, annot=True,  fmt='.2f', xticklabels=['Java', 'Python', 'Scala'], yticklabels=['Java', 'Python', 'Scala']);
-plt.title('Confusion Matrix (Percentage)');
-plt.show()
-print(classification_report(test_y, predictions,target_names=['Java', 'Python', 'Scala'], digits=2))
+print('The resulting accuracy using Linear SVC is ', (100 * accuracy), '%\n')
