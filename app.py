@@ -39,8 +39,8 @@ class Doc_Classifier:
                     self.size=0
                 else:
                     self.size=self.size+1
-                    data_input.append(row[0])
-                    data_output.append(row[1])
+                    data_input.append(row[1])
+                    data_output.append(row[0])
         print ('There are ',self.size,' examples in the training set\n')    
           
         #Generate a  permutation to re-shuffle the corpus so that training and testing data can be split randomly          
@@ -78,13 +78,13 @@ class Doc_Classifier:
         predicted = SVM_Classifier.predict(self.X_test)
         y_pred = self.lb.inverse_transform(predicted)
          
-        i=self.train_ex
+        #i=self.train_ex
+        i=0
         correct=0
         for label in y_pred:
             if label==self.Y_train[i]:
                 correct=correct+1
-            if i+1 < 7:    
-                i = i + 1
+            i = i + 1
         for item, labels in zip(self.X_test, y_pred):
             print('Item: {0} => Label: {1}'.format(item, labels))
 

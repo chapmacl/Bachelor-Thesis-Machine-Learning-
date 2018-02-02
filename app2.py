@@ -1,7 +1,7 @@
 import glob
 import numpy
 import pandas as pd
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 #import seaborn as sns
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.feature_extraction.text import (CountVectorizer, TfidfTransformer)
@@ -9,9 +9,10 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import KFold
-from sklearn.metrics import (confusion_matrix, classification_report, accuracy_score)
-from sklearn.calibration import (calibration_curve, CalibratedClassifierCV)
+#from sklearn.metrics import (confusion_matrix, classification_report, accuracy_score)
+#from sklearn.calibration import (calibration_curve, CalibratedClassifierCV)
 from sklearn.model_selection._split import RepeatedKFold
+from sklearn.metrics import f1_score
 
  
 #read training set from training file 
@@ -33,10 +34,11 @@ pipeline = Pipeline([
 
 print('Training data...')
 #train data 
-k_fold = RepeatedKFold(n_splits=6)
-#k_fold = KFold(n_splits=6, shuffle = True)
+#k_fold = RepeatedKFold(n_splits=6)
+k_fold = KFold(n_splits=6, shuffle = True)
 k_fold.get_n_splits(data)
 
+scores = []
 for train_indices, test_indices in k_fold.split(data):
     train_text = data.iloc[train_indices]['text'].values
     train_y = data.iloc[train_indices]['class'].values.astype(str)
@@ -77,10 +79,11 @@ for train_indices, test_indices in k_fold.split(data):
     for item, labels in zip(test_text, predictions):
         print('Item: {0} => Label: {1}'.format(item, labels))
 
+ 
+    score = f1_score(test_y, predictions)
+    scores.append(score)
 
-    #accuracy = accuracy_score(test_y, predictions)
-
-#print('The resulting accuracy using Linear SVC is ', (100 * accuracy), '%\n')
+print('The resulting accuracy using Linear SVC is ', sum(scores)/len(scores), '%\n')
 #print y_proba
 """
 percentage_matrix = 100 * cm / cm.sum(axis=1).astype(float)
