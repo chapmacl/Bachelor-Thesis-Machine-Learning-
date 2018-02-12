@@ -14,6 +14,7 @@ import seaborn as sns
 class Doc_Classifier:
     X_train=[]
     X_test=[]
+    X_predict=[]
     Y_train=[]
     y=[]
     Y1=[]
@@ -54,22 +55,21 @@ class Doc_Classifier:
         self.X_train = np.array(train_text[:self.train_ex])
         self.X_test  = np.array(train_text[self.train_ex:self.size])
         
-        """
+        
         files = glob.glob("predict.txt")
         lines = []
         for fle in files:
             with open(fle) as f:
                 lines += f.readlines()        
-                self.X_test = np.array(lines)
+                self.X_pred = np.array(lines)
         
-        """
         
         self.lb=LabelBinarizer()
         self.Y1=self.Y_train[:self.train_ex]
         self.y = self.lb.fit_transform(self.Y1)
             
 
-    def SVM_LinearSVC(self):        
+    def SVM_LinearSVCTrain(self):        
         SVM_Classifier = Pipeline([
                 ('vectorizer', CountVectorizer()),
                 ('tfidf', TfidfTransformer()),
@@ -97,24 +97,43 @@ class Doc_Classifier:
         print('Total number of samples classified in Test data',self.size-self.train_ex)
         print('The resulting accuracy using Linear SVC is ',(float(correct)*100/float(self.size-self.train_ex)),'%\n')
 
-        #cm=confusion_matrix(self.Y_train[self.train_ex:self.size],y_pred)
-        #percentage_matrix = 100 * cm / cm.sum(axis=1).astype(float)
+        cm=confusion_matrix(self.Y_train[self.train_ex:self.size],y_pred)
+        percentage_matrix = 100 * cm / cm.sum(axis=1).astype(float)
         plt.figure(figsize=(16, 16))
-        #sns.heatmap(percentage_matrix, annot=True,  fmt='.2f', xticklabels=['Python', 'Java', 'Scala'], yticklabels=['Python', 'Java', 'Scala']);
-        #plt.title('Confusion Matrix (Percentage)');
-        #plt.show()
-        #print(classification_report(self.Y_train[self.train_ex:self.size], y_pred,target_names=['Scala', 'Java', 'Python']))
+        sns.heatmap(percentage_matrix, annot=True,  fmt='.2f', xticklabels=['Python', 'Java', 'Scala'], yticklabels=['Python', 'Java', 'Scala']);
+        plt.title('Confusion Matrix (Percentage)');
+        plt.show()
+        print(classification_report(self.Y_train[self.train_ex:self.size], y_pred,target_names=['Scala', 'Java', 'Python']))
 
         
         return y_pred
     
+    def SVM_LinearSVC(self):        
+        SVM_Classifier = Pipeline([
+                ('vectorizer', CountVectorizer()),
+                ('tfidf', TfidfTransformer()),
+                ('clf', OneVsRestClassifier(LinearSVC()))
+                ])
+         
+        SVM_Classifier.fit(self.X_train,self.y)
+         
+        predicted = SVM_Classifier.predict(self.X_predict)
+        y_pred = self.lb.inverse_transform(predicted)
+         
+        for item, labels in zip(self.X_predict, y_pred):
+            print('Item: {0} => Label: {1}'.format(item, labels))
 
+        
+        return y_pred
+    
+    
 start=time.time()
 print('Initializing....')
 clf=Doc_Classifier()
 start=time.time()
 
 print('\nRunning SVM Classification')
+clf.SVM_LinearSVCTrain()
 clf.SVM_LinearSVC()
 time3=time.time()
 svm_time=time.time()-start
