@@ -74,7 +74,7 @@ for train_indices, test_indices in k_fold.split(data):
     df2.index+=1
     df2.index.name='Id'
     df2.columns=['Label']
-    df2.to_csv('results.csv',header=True)
+    #df2.to_csv('results.csv',header=True)
 
     for item, labels in zip(test_text, predictions):
         print('Item: {0} => Label: {1}'.format(item, labels))
