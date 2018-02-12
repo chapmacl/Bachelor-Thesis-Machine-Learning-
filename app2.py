@@ -34,8 +34,8 @@ pipeline = Pipeline([
 
 print('Training data...')
 #train data 
-#k_fold = RepeatedKFold(n_splits=6)
-k_fold = KFold(n_splits=6, shuffle = True)
+k_fold = RepeatedKFold(n_splits=6)
+#k_fold = KFold(n_splits=6, shuffle = True)
 k_fold.get_n_splits(data)
 
 scores = []
@@ -52,7 +52,7 @@ for train_indices, test_indices in k_fold.split(data):
     for fle in files:
         with open(fle) as f:
             lines += f.readlines()        
-    test_text = numpy.array(lines)
+    #test_text = numpy.array(lines)
     print('Test data read')
     #fit training data
     lb = LabelBinarizer()
@@ -79,8 +79,10 @@ for train_indices, test_indices in k_fold.split(data):
     for item, labels in zip(test_text, predictions):
         print('Item: {0} => Label: {1}'.format(item, labels))
 
- 
-    score = f1_score(test_y, predictions)
+    lb=LabelBinarizer()
+        
+    y = lb.fit_transform(test_y)
+    score = f1_score(y, predicted)
     scores.append(score)
 
 print('The resulting accuracy using Linear SVC is ', sum(scores)/len(scores), '%\n')
