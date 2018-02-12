@@ -54,19 +54,18 @@ class Doc_Classifier:
         
         self.X_train = np.array(train_text[:self.train_ex])
         self.X_test  = np.array(train_text[self.train_ex:self.size])
+        self.Train = np.array(train_text)
         
         
-        files = glob.glob("predict.txt")
-        lines = []
-        for fle in files:
-            with open(fle) as f:
-                lines += f.readlines()        
-                self.X_pred = np.array(lines)
-        
+    
+        with open('predict.txt') as f:
+            lines = f.read().splitlines()
+            self.X_predict = np.array(lines)
         
         self.lb=LabelBinarizer()
         self.Y1=self.Y_train[:self.train_ex]
         self.y = self.lb.fit_transform(self.Y1)
+        self.y2 = self.lb.fit_transform(self.Y_train)
             
 
     def SVM_LinearSVCTrain(self):        
@@ -115,7 +114,7 @@ class Doc_Classifier:
                 ('clf', OneVsRestClassifier(LinearSVC()))
                 ])
          
-        SVM_Classifier.fit(self.X_train,self.y)
+        SVM_Classifier.fit(self.Train,self.y2)
          
         predicted = SVM_Classifier.predict(self.X_predict)
         y_pred = self.lb.inverse_transform(predicted)
