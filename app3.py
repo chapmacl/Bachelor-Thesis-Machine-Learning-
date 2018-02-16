@@ -29,9 +29,9 @@ class Doc_Classifier:
         data_output=[]
         train_text=[]
 
-        self.train_ex=int(input('Enter the number of examples that should be used to train the model\n'))
+        
 
-        with open('train.csv','r') as f:
+        with open('traintest3.csv','r') as f:
             train_csv=csv.reader(f)
             
             self.size=-1
@@ -43,6 +43,8 @@ class Doc_Classifier:
                     data_input.append(row[1])
                     data_output.append(row[0])
         print ('There are ',self.size,' examples in the training set\n')    
+          
+        self.train_ex=int(input('Enter the number of examples that should be used to train the model\n'))
           
         #Generate a  permutation to re-shuffle the corpus so that training and testing data can be split randomly          
         perm=np.random.permutation(self.size)
@@ -96,14 +98,15 @@ class Doc_Classifier:
         print('Total number of samples classified in Test data',self.size-self.train_ex)
         print('The resulting accuracy using Linear SVC is ',(float(correct)*100/float(self.size-self.train_ex)),'%\n')
 
+        """
         cm=confusion_matrix(self.Y_train[self.train_ex:self.size],y_pred)
         percentage_matrix = 100 * cm / cm.sum(axis=1).astype(float)
         plt.figure(figsize=(16, 16))
         sns.heatmap(percentage_matrix, annot=True,  fmt='.2f', xticklabels=['Python', 'Java', 'Scala'], yticklabels=['Python', 'Java', 'Scala']);
         plt.title('Confusion Matrix (Percentage)');
-        plt.show()
+        #plt.show()
         print(classification_report(self.Y_train[self.train_ex:self.size], y_pred,target_names=['Scala', 'Java', 'Python']))
-
+        """
         
         return y_pred
     
@@ -132,6 +135,7 @@ clf=Doc_Classifier()
 start=time.time()
 
 print('\nRunning SVM Classification')
+
 clf.SVM_LinearSVCTrain()
 clf.SVM_LinearSVC()
 time3=time.time()
