@@ -44,8 +44,8 @@ class Doc_Classifier:
                     data_output.append(row[0])
         print ('There are ',self.size,' examples in the training set\n')    
           
-        self.train_ex=int(input('Enter the number of examples that should be used to train the model\n'))
-          
+        #self.train_ex=int(input('Enter the number of examples that should be used to train the model\n'))
+        self.train_ex=int(15)  
         #Generate a  permutation to re-shuffle the corpus so that training and testing data can be split randomly          
         perm=np.random.permutation(self.size)
         
@@ -76,11 +76,19 @@ class Doc_Classifier:
                 ('tfidf', TfidfTransformer()),
                 ('clf', OneVsRestClassifier(LinearSVC()))
                 ])
+        
          
         SVM_Classifier.fit(self.X_train,self.y)
          
         predicted = SVM_Classifier.predict(self.X_test)
-        y_pred = self.lb.inverse_transform(predicted)
+        #y_pred = self.lb.inverse_transform(predicted)
+        
+        try:
+            y_pred = self.lb.inverse_transform(predicted)
+            print(predicted)
+        except:
+            print(predicted)   
+          
          
         i=self.train_ex
         correct=0
@@ -129,6 +137,9 @@ class Doc_Classifier:
         return y_pred
     
     
+"""
+Create a giant do-while and then a try catch inside. Use the continue command on error and start over 
+"""
 start=time.time()
 print('Initializing....')
 clf=Doc_Classifier()
@@ -143,3 +154,4 @@ svm_time=time.time()-start
 
 
 print('\nThe running time was ',time.time()-start, ' seconds')
+    
