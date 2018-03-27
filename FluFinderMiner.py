@@ -23,7 +23,7 @@ class MyListener(StreamListener):
         
         self.outfile = "flu_tweets.csv" 
         try:
-            with open(self.outfile, 'a', newline='') as csvfile:
+            with open(self.outfile, 'a', errors = 'ignore') as csvfile:
                                 
                 decoded = json.loads(data)
                                 
@@ -91,4 +91,4 @@ if __name__ == '__main__':
     api = tweepy.API(auth)
 
     twitter_stream = Stream(auth, MyListener())
-    twitter_stream.filter(track=["flu "], languages=["en"])
+    twitter_stream.filter(track=["flu"], languages=["en"])
