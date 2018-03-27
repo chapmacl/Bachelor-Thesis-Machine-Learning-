@@ -8,6 +8,7 @@ import json
 from numpy.distutils.fcompiler import none
 import csv
 from array import array
+import re
 
 # consumer key, consumer secret, access token, access secret.
 ckey = "ZD26bhJnJaFqCkwcsSxTeRmT7"
@@ -23,7 +24,7 @@ class MyListener(StreamListener):
         
         self.outfile = "flu_tweets.csv" 
         try:
-            with open(self.outfile, 'a', errors = 'ignore') as csvfile:
+            with open(self.outfile, 'a', newline='', errors = 'ignore') as csvfile:
                                 
                 decoded = json.loads(data)
                                 
@@ -33,6 +34,8 @@ class MyListener(StreamListener):
                     tweet = decoded['extended_tweet']['full_text']
                 except:    
                     tweet = decoded['text']
+                    
+                tweet = re.sub(r"https\S+", "", tweet)    
                 location = "none"
                 country = "none"
                 
@@ -44,10 +47,11 @@ class MyListener(StreamListener):
                     
                 out = date + ", " + tweet + ", " + location + ", " + country
                 
+                """
                 write = [date, tweet, location, country]
                 writer = csv.writer(csvfile)
                 writer.writerows([write])
-               
+               """
                 print(out)
                 
                 return True
