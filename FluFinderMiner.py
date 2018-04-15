@@ -26,9 +26,7 @@ class MyListener(StreamListener):
         try:
             with open(self.outfile, 'a', newline='', errors = 'ignore') as csvfile:
                                 
-                decoded = json.loads(data)
-                                
-                # if decoded['lang'] == "en":
+                decoded = json.loads(data)                 
                 date = decoded['created_at']
                 try:
                     tweet = decoded['extended_tweet']['full_text']
@@ -38,7 +36,6 @@ class MyListener(StreamListener):
                 tweet = re.sub(r"https\S+", "", tweet)    
                 location = "none"
                 country = "none"
-                
                 try: 
                     location = decoded['place']['name']
                     country = decoded['place']['country_code']
@@ -46,12 +43,10 @@ class MyListener(StreamListener):
                     pass 
                     
                 out = date + ", " + tweet + ", " + location + ", " + country
-                
-                """
                 write = [date, tweet, location, country]
                 writer = csv.writer(csvfile)
                 writer.writerows([write])
-               """
+               
                 print(out)
                 
                 return True

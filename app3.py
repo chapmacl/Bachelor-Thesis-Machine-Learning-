@@ -28,9 +28,7 @@ class Doc_Classifier:
         #List to store output labels
         data_output=[]
         train_text=[]
-
-        
-
+    
         with open('traintest3.csv','r') as f:
             train_csv=csv.reader(f)
             
@@ -44,8 +42,8 @@ class Doc_Classifier:
                     data_output.append(row[0])
         print ('There are ',self.size,' examples in the training set\n')    
           
-        #self.train_ex=int(input('Enter the number of examples that should be used to train the model\n'))
-        self.train_ex=int(15)  
+        self.train_ex=int(input('Enter the number of examples that should be used to train the model\n'))
+         
         #Generate a  permutation to re-shuffle the corpus so that training and testing data can be split randomly          
         perm=np.random.permutation(self.size)
         
@@ -58,8 +56,6 @@ class Doc_Classifier:
         self.X_test  = np.array(train_text[self.train_ex:self.size])
         self.Train = np.array(train_text)
         
-        
-    
         with open('predict.txt') as f:
             lines = f.read().splitlines()
             self.X_predict = np.array(lines)
@@ -81,15 +77,8 @@ class Doc_Classifier:
         SVM_Classifier.fit(self.X_train,self.y)
          
         predicted = SVM_Classifier.predict(self.X_test)
-        #y_pred = self.lb.inverse_transform(predicted)
-        
-        try:
-            y_pred = self.lb.inverse_transform(predicted)
-            print(predicted)
-        except:
-            print(predicted)   
+        y_pred = self.lb.inverse_transform(predicted)
           
-         
         i=self.train_ex
         correct=0
         for label in y_pred:
