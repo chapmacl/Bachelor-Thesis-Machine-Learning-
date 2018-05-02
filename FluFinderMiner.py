@@ -33,7 +33,11 @@ class MyListener(StreamListener):
                 except:    
                     tweet = decoded['text']
                     
-                tweet = re.sub(r"https\S+", "", tweet)    
+                tweet = re.sub(r"https\S+", "", tweet)
+                tweet = re.sub(r"@\S+", "", tweet) 
+                tweet = re.sub("RT", "", tweet)
+                tweet = re.sub("\n", " ", tweet)
+                    
                 location = "none"
                 country = "none"
                 try: 
@@ -48,6 +52,7 @@ class MyListener(StreamListener):
                 writer.writerows([write])
                
                 print(out)
+               
                 
                 return True
         except BaseException as e:
