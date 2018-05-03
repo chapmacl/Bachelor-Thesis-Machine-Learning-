@@ -10,6 +10,7 @@ from sklearn.svm import LinearSVC
 from sklearn.metrics import (confusion_matrix, classification_report)
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
  
 class Doc_Classifier:
     X_train=[]
@@ -59,6 +60,13 @@ class Doc_Classifier:
         with open('predict.txt') as f:
             lines = f.read().splitlines()
             self.X_predict = np.array(lines)
+        
+        colNames = ['Date', 'Tweet', 'City', 'Country']
+        imported = pd.read_csv('final_flu_tweets.csv', names=colNames, encoding='cp1252')
+        
+        self.X_predict = imported.Tweet.tolist()
+        self.X_predict.pop(0)
+        
         
         self.lb=LabelBinarizer()
         self.Y1=self.Y_train[:self.train_ex]
@@ -118,10 +126,20 @@ class Doc_Classifier:
          
         predicted = SVM_Classifier.predict(self.X_predict)
         y_pred = self.lb.inverse_transform(predicted)
-         
-        for item, labels in zip(self.X_predict, y_pred):
-            print('Item: {0} => Label: {1}'.format(item, labels))
+        
 
+        lines = [[0]*2 for i in range(y_pred.__len__())]
+                
+        for x in range (0, y_pred.__len__()):
+            print('Item: ' + self.X_predict[x] + ' => Label: ' + y_pred[x])
+            lines[x][0] = self.X_predict[x]
+            lines[x][1] = y_pred[x]
+            
+        writer = csv.writer(open('results.csv', "w", newline='')) 
+        writer.writerows(lines)
+        
+        #for item, labels in zip(self.X_predict, y_pred):
+            #print('Item: {0} => Label: {1}'.format(item, labels))
         
         return y_pred
     

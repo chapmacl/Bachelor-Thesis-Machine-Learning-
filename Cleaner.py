@@ -18,6 +18,6 @@ for x in range(0, lines.__len__()):
     text = re.sub("\n", " ", text)
     lines[x][1] = text
 
-writer = csv.writer(open('test.csv', "a"))
+writer = csv.writer(open('test.csv', "w", newline=''))
 writer.writerows(lines)
 
