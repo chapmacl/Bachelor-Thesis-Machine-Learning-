@@ -30,7 +30,7 @@ class Doc_Classifier:
         data_output=[]
         train_text=[]
     
-        with open('traintest3.csv','r') as f:
+        with open('traintweets.csv','r') as f:
             train_csv=csv.reader(f)
             
             self.size=-1
@@ -95,8 +95,10 @@ class Doc_Classifier:
             if label==self.Y_train[i]:
                 correct=correct+1
             i = i + 1
-        for item, labels in zip(self.X_test, y_pred):
-            print('Item: {0} => Label: {1}'.format(item, labels))
+            
+        #for item, labels in zip(self.X_test, y_pred):
+            #print('Item: {0} => Label: {1}'.format(item, labels))
+              
 
         print('Number of Examples used for Training',self.train_ex)
         print('Number of Correctly classified',correct)
@@ -131,7 +133,7 @@ class Doc_Classifier:
         lines = [[0]*2 for i in range(y_pred.__len__())]
                 
         for x in range (0, y_pred.__len__()):
-            print('Item: ' + self.X_predict[x] + ' => Label: ' + y_pred[x])
+            #print('Item: ' + self.X_predict[x] + ' => Label: ' + y_pred[x])
             lines[x][0] = self.X_predict[x]
             lines[x][1] = y_pred[x]
             
