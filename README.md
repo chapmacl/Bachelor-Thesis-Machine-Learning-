@@ -1,12 +1,9 @@
-[![DOI](https://zenodo.org/badge/94644625.svg)](https://zenodo.org/badge/latestdoi/94644625)
-
-
 The package includes the following files:
 	
--data_extraction.py: The data extraction script extracts the relevant data from the corpus and creates a CSV corpus.csv to store the data in a format that can be used by the system
--SVMClassifier.py: implements the Linear SVC SVM Classifier and returns a list of classified output labels for the test data
--corpus.txt: This is the corpus that is used for the project, this file can be stored at any desired path. When the data_extraction.py script is run, the system prompts the user to enter the path of the location where this file is stored)
--README.txt
+-FluFinderMiner2.py is the mining script that connects to the Twitter API and gathers tweets which are loaded into a CSV file
+-app3.py is the SVM algorithm that takes the tweets from the CSV file and the training set CSV to classify them as valid or unvalid, then saves them into results.CSV
+-Several additional CSVs and files from previous stages in my thesis progression
+-The slides and video from my final presentation
 
 Instructions:
 
@@ -26,12 +23,10 @@ from sklearn.cross_validation import KFold
 from sklearn.metrics import (confusion_matrix, classification_report, accuracy_score)
 from sklearn.calibration import (calibration_curve, CalibratedClassifierCV)
 
-2) Save the corpus.txt file on disk
+2) Obtain Twitter API keys and tokens and add them to the FluFinderMinder2.py app
 
-3) Run the data_extraction.py script and provide the required input (i.e. file path to the corpus.txt)
+3) Create a training set for the tweets in the format shown in the existing training file
 
-4) Run the SVMClassifier.py script and provide the required input
-
-5) A heatmap of the confusion matrix (percentage), accuracy score and classification report are printed
+4) Run app3.py to classify the tweets. The program will first guage the accuracy of the training set and then use the entire training set to build a second model to classify the remaining data
 
 	
