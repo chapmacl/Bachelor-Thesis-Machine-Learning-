@@ -16,12 +16,9 @@ csecret = "C92pAnJdQKnPse1EZtdhsmVm4yNCS2tJw7MMHgZUqdYBoo0sdC"
 atoken = "940613974067957762-dpqASwm9vKDqqpypCPKKDaMU5y5LyA4"
 asecret = "8RXhDyS4SeAqFzoLBARJMXFDzGdnpm0i8DJC55lvGSSRX"
 
-
 class MyListener(StreamListener):
     """Custom StreamListener for streaming data."""
-
     def on_data(self, data):
-        
         self.outfile = "flu_tweets.csv" 
         try:
             with open(self.outfile, 'a', newline='', errors = 'ignore') as csvfile:
@@ -50,10 +47,7 @@ class MyListener(StreamListener):
                 write = [date, tweet, location, country]
                 writer = csv.writer(csvfile)
                 writer.writerows([write])
-               
                 print(out)
-               
-                
                 return True
         except BaseException as e:
             print("Error on_data: %s" % str(e))
@@ -63,31 +57,6 @@ class MyListener(StreamListener):
     def on_error(self, status):
         print(status)
         return True
-
-
-def format_filename(fname):
-    """Convert file name into a safe string.
-    Arguments:
-        fname -- the file name to convert
-    Return:
-        String -- converted file name
-    """
-    return ''.join(convert_valid(one_char) for one_char in fname)
-
-
-def convert_valid(one_char):
-    """Convert a character into '_' if invalid.
-    Arguments:
-        one_char -- the char to convert
-    Return:
-        Character -- converted char
-    """
-    valid_chars = "-_.%s%s" % (string.ascii_letters, string.digits)
-    if one_char in valid_chars:
-        return one_char
-    else:
-        return '_'
-
 
 if __name__ == '__main__':
     auth = OAuthHandler(ckey, csecret)
